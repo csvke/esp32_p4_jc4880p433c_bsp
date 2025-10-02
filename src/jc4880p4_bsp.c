@@ -6,11 +6,11 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_mipi_dsi.h"
 #include "esp_lcd_st7701.h"
-#include "esp_lcd_touch_gt911.h"
 #include "esp_ldo_regulator.h"
 #include "driver/ledc.h"
 #include "driver/i2c_master.h"
 #include "bsp/display.h"
+#include "bsp/touch.h"
 #include "bsp/esp-bsp.h"
 
 static const char *TAG = "JC4880P4_BSP";
@@ -66,7 +66,7 @@ static const st7701_lcd_init_cmd_t st7701_lcd_cmds[] = {
     {0x29, (uint8_t[]){0x00}, 1, 20},
 };
 
-static esp_err_t bsp_i2c_init(void)
+esp_err_t bsp_i2c_init(void)
 {
     if (i2c_handle) return ESP_OK;
     i2c_master_bus_config_t i2c_bus_conf = {
@@ -76,6 +76,11 @@ static esp_err_t bsp_i2c_init(void)
         .i2c_port = 1,
     };
     return i2c_new_master_bus(&i2c_bus_conf, &i2c_handle);
+}
+
+i2c_master_bus_handle_t bsp_i2c_get_handle(void)
+{
+    return i2c_handle;
 }
 
 esp_err_t bsp_spiffs_mount(void)
@@ -275,23 +280,10 @@ lv_display_t *bsp_display_start_with_config(const bsp_display_cfg_t *cfg)
     const lvgl_port_display_dsi_cfg_t dsi_cfg = { .flags = { .avoid_tearing = false } };
     lv_display_t *disp = lvgl_port_add_disp_dsi(&disp_cfg, &dsi_cfg);
 
-    // Touch
+    // Touch - using modular touch API
     esp_lcd_touch_handle_t tp;
-    ESP_ERROR_CHECK(bsp_i2c_init());
-    esp_lcd_panel_io_handle_t tp_io_handle = NULL;
-    esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG();
-    tp_io_config.scl_speed_hz = 400000;
-    ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(i2c_handle, &tp_io_config, &tp_io_handle));
-
-    const esp_lcd_touch_config_t tp_cfg = {
-        .x_max = BSP_LCD_H_RES,
-        .y_max = BSP_LCD_V_RES,
-        .rst_gpio_num = GPIO_NUM_NC,
-        .int_gpio_num = GPIO_NUM_NC,
-        .levels = { .reset = 0, .interrupt = 0 },
-        .flags = { .swap_xy = 0, .mirror_x = 0, .mirror_y = 0 },
-    };
-    ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_gt911(tp_io_handle, &tp_cfg, &tp));
+    const bsp_touch_config_t touch_config = { .dummy = NULL };
+    ESP_ERROR_CHECK(bsp_touch_new(&touch_config, &tp));
 
     const lvgl_port_touch_cfg_t touch_cfg = { .disp = disp, .handle = tp };
     lvgl_port_add_touch(&touch_cfg);
