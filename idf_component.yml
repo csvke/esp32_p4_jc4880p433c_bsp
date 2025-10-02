@@ -6,5 +6,6 @@ documentation: "https://github.com/csvke/esp32_p4_jc4880p433c_bsp/blob/main/READ
 dependencies:
   idf: ">=5.0.0"
   espressif/esp_lcd_st7701: "^1.1.0"
+  espressif/esp_lcd_touch: "^1.1.0"
   espressif/esp_lcd_touch_gt911: "^1.1.0" 
   espressif/esp_lvgl_port: "^2.0.0"
