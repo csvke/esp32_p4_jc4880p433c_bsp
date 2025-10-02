@@ -3,6 +3,7 @@
 #include "sdkconfig.h"
 #include "bsp/config.h"
 #include "bsp/display.h"
+#include "esp_lcd_touch.h"
 
 #ifdef __cplusplus
 extern "C" {
