@@ -19,8 +19,6 @@ esp_err_t bsp_touch_new(const bsp_touch_config_t *config, esp_lcd_touch_handle_t
 {
     ESP_RETURN_ON_FALSE(ret_touch, ESP_ERR_INVALID_ARG, TAG, "ret_touch is NULL");
     
-    esp_err_t ret = ESP_OK;
-    
     /* Initialize I2C */
     ESP_RETURN_ON_ERROR(bsp_i2c_init(), TAG, "I2C init failed");
     i2c_master_bus_handle_t i2c_handle = bsp_i2c_get_handle();
