@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "src/jc4880p4_bsp.c"
+    SRCS "src/jc4880p433c_bsp.c"
          "src/bsp_touch.c"
     INCLUDE_DIRS "include"
     REQUIRES esp_lcd_touch

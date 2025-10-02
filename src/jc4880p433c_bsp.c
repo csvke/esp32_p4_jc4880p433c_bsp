@@ -13,7 +13,7 @@
 #include "bsp/touch.h"
 #include "bsp/esp-bsp.h"
 
-static const char *TAG = "JC4880P4_BSP";
+static const char *TAG = "JC4880P433C_BSP";
 static i2c_master_bus_handle_t i2c_handle = NULL;
 
 // ST7701 vendor initialization sequence for 480x800 panel
