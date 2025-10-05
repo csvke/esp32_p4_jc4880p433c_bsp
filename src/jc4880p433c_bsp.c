@@ -89,7 +89,7 @@ esp_err_t bsp_spiffs_mount(void)
         .base_path = "/spiffs",
         .partition_label = "storage",
         .max_files = 5,
-        .format_if_mount_failed = false,
+        .format_if_mount_failed = true,  // Auto-format on first mount
     };
     ESP_RETURN_ON_ERROR(esp_vfs_spiffs_register(&conf), TAG, "spiffs mount failed");
     size_t total=0, used=0;
